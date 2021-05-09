@@ -31,7 +31,7 @@ It took me 35 seconds to app the app for the first time and 15 seconds every tim
 - Get current conversion rates. For some reason it doesn't update the labels. It did in development mode.
 - Run. A dialog should pop up when finished.
 
-Opening it a second time should be faster btw.
+Opening it a second time should be faster by the way.
 
 ## To do:
 - Fix blur

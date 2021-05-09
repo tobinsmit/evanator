@@ -167,7 +167,7 @@ def bookToExcel(author, bookTitle, writer, startrow, ingramDf, amazonKindleDf, a
     worksheet.write(startrow,pictureCol+1,bookTitle)
     worksheet.write(startrow+1,pictureCol,'Author:', bold_format)
     worksheet.write(startrow+1,pictureCol+1,author)
-    worksheet.insert_image(startrow+2, 0, imagePath, {'x_offset': 26, 'y_offset': 10, 'x_scale': 1, 'y_scale': 1})
+    worksheet.insert_image(startrow+2, 0, imagePath, {'x_offset': 26, 'y_offset': 10, 'x_scale': 0.65, 'y_scale': 0.65})
 
     totals['Currency'] = 'AUD'
     (currentRow, _) = dfToExcel(writer=writer, sheet_name=sheet_name, df=totals, startrow=currentRow, tableTitle="TOTAL SALES", totalRow=False, rates=rates)
@@ -231,9 +231,9 @@ def main(ingramPaths, amazonPath, outputPath, rates):
 
 if __name__ == '__main__':
     # For testing purposes only
-    ingramPaths = ['../julyData/sales_compAU.xls','../julyData/sales_compUK.xls']
-    amazonPath = '../julyData/KDP-Sales-Dashboard-JULY-2020.xlsx'
-    outputPath = '../julyOutput'
+    ingramPaths = ['../data/2020-july/sales_compAU.xls','../data/2020-july/sales_compUK.xls']
+    amazonPath = '../data/2020-july/KDP-Sales-Dashboard-JULY-2020.xlsx'
+    outputPath = '../data/2020-july-output-new'
     rates = {'AUD':1,'USD':1.5,'GBP':2}
 
     main(ingramPaths, amazonPath, outputPath, rates)
