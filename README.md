@@ -3,12 +3,18 @@
 cd src
 python3 -m venv venv
 source venv/bin/activate
-pip3 install -r requirements-v4.txt
+pip3 install -r requirements.txt
 ```
 ## To run:
 ```
 python3 tobinator.py
 ```
+## To make python script executable:
+Make "open.command" double clickable:
+- Right click on folder "tobinator" and select "New Terminal at Folder".
+- Copy and paste: `chmod u+x open.command` and hit enter.
+- The file should now be double clickable and you can close the terminal.
+
 ## To build app:
 ```
 pip3 install pyinstaller
