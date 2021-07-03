@@ -33,18 +33,18 @@ config = {
     'amazonKindle': {
         'tsv':False,
         'sheet': 'eBook Royalty',
-        'colsToKeep': ['Title','Author Name','Net Units Sold','Royalty','Currency'],
+        'colsToKeep': ['Title','Author','Author Name','Units Sold','Units Refunded','Royalty','Currency'],
         'renamedCols': {
-            'Net Units Sold': 'Units',
+            # 'Units Sold': 'Units',
             'Author Name': 'Author',
         }
     },
     'amazonPaper': {
         'tsv':False,
         'sheet': 'Paperback Royalty',
-        'colsToKeep': ['Title','Author Name','Net Units Sold','Royalty','Currency'],
+        'colsToKeep': ['Title','Author','Author Name','Units Sold','Units Refunded','Royalty','Currency'],
         'renamedCols': {
-            'Net Units Sold': 'Units',
+            # 'Net Units Sold': 'Units',
             'Author Name': 'Author',
         }
     },
@@ -56,6 +56,12 @@ def getBookData(df, author, title):
         return pd.DataFrame(columns=['Units','Royalty','Currency'])
     df = df[df['Author'] == author]
     df = df[df['titleid'] == titleToTitleid(title)]
+    if 'Units' not in df.columns:
+        print(df)
+        df['Units'] = df['Units Sold'] - df['Units Refunded']
+        del df['Units Sold']
+        del df['Units Refunded']
+
     df = df[['Units','Royalty','Currency']]
     # Get sums for each currency
     df = df.groupby(df['Currency'], as_index=False).sum()
@@ -69,7 +75,7 @@ def getVendorTotals(df, rates):
     totalRoyalty = 0
     totalUnits = 0
     for _, row in df.iterrows():
-        totalRoyalty = totalRoyalty + row['Royalty'] * rates[row['Currency']]
+        totalRoyalty = totalRoyalty + row['Royalty'] / rates[row['Currency']]
         totalUnits = totalUnits + row['Units']
 
     return pd.DataFrame({
@@ -90,7 +96,7 @@ def getCleanDataFromPath(cfg, path):
         except:
             df = pd.read_excel(path)
     else:
-        df = pd.read_excel(path,sheet_name=cfg['sheet'])
+        df = pd.read_excel(path,sheet_name=cfg['sheet'], skiprows=1)
 
     # Remove unwanted columns
     for col in df.columns:
@@ -211,7 +217,10 @@ def authorToExcel(author, ingramDf, amazonKindleDf, amazonPaperDf, periodTitle, 
 
 def main(ingramPaths, amazonPath, outputPath, rates):    
     if amazonPath is not None:
-        periodTitle = re.search(r'(?<=Dashboard-).*(?=-\d{4}\.xlsx)', amazonPath).group(0)
+        try:
+            periodTitle = re.search(r'(?<=Dashboard-).*(?=-\d{4}\.xlsx)', amazonPath).group(0)
+        except:
+            periodTitle = "'===> UNKNOWN MONTH <==="
     else:
         periodTitle = "'===> UNKNOWN MONTH <==="
 
@@ -231,9 +240,9 @@ def main(ingramPaths, amazonPath, outputPath, rates):
 
 if __name__ == '__main__':
     # For testing purposes only
-    ingramPaths = ['../data/2020-july/sales_compAU.xls','../data/2020-july/sales_compUK.xls']
-    amazonPath = '../data/2020-july/KDP-Sales-Dashboard-JULY-2020.xlsx'
-    outputPath = '../data/2020-july-output-new'
-    rates = {'AUD':1,'USD':1.5,'GBP':2}
+    ingramPaths = ['../data/2021-may/sales_compAU.xls','../data/2021-may/sales_compUK.xls','../data/2021-may/sales_compUS.xls']
+    amazonPath = '../data/2021-may/KDP-Sales-Dashboard-MAY-2021.xlsx'
+    outputPath = '../data/2021-may/output'
+    rates = {'AUD':1,'USD':0.75,'GBP':0.5}
 
     main(ingramPaths, amazonPath, outputPath, rates)

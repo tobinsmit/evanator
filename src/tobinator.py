@@ -1,9 +1,14 @@
 print("Starting tobinator")
+
 from PySide2 import QtWidgets as qw
 print("Done import PySide2")
+
 import sys, re, traceback
+print("Done import sys, re, traceback")
+
 from forex_python.converter import CurrencyRates
-print("Done import sys, re, forex_python")
+print("Done import forex_python")
+
 import evanator
 print("Done import evanator")
 
@@ -73,6 +78,10 @@ class Window(qw.QWidget):
         self.ratesButt = qw.QPushButton("Get rates")
         self.ratesButt.clicked.connect(self.getRates)
         layout.addWidget(self.ratesButt, currentRow, 0)
+
+        self.ratesViewButt = qw.QPushButton("View all rates")
+        self.ratesViewButt.clicked.connect(self.viewRates)
+        layout.addWidget(self.ratesViewButt, currentRow, 1)
         currentRow += 1
 
         self.rates = None
@@ -145,10 +154,17 @@ class Window(qw.QWidget):
 
     def getRates(self):
         self.rates = CurrencyRates().get_rates('AUD')
-        self.rates['USD'] = 1/self.rates['USD']
-        self.rates['GBP'] = 1/self.rates['GBP']
-        self.usdLabel.setText(f"{self.rates['USD']} AUD")
-        self.gbpLabel.setText(f"{self.rates['GBP']} AUD")
+        self.rates['AUD'] = 1
+        self.usdLabel.setText(f"{1/self.rates['USD']:.5f} AUD")
+        self.gbpLabel.setText(f"{1/self.rates['GBP']:.5f} AUD")
+             
+    def viewRates(self):
+        if self.rates == None:
+            qw.QMessageBox.about(self,'Rates', 'Rates have not been set yet')
+        else:
+            ratesArray = [f'1 {key} = {1/value:.5f} AUD' for key, value in self.rates.items()]
+            ratesStr = '\n'.join(ratesArray)
+            qw.QMessageBox.about(self,'Rates', ratesStr)
              
     def run(self):
         print("Running")
