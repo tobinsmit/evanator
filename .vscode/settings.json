@@ -1,3 +1,4 @@
 {
-    "python.pythonPath": "src/venv/bin/ipython"
+    // "python.pythonPath": "src/venv/bin/python3",
+    "python.pythonPath": "src-pyqt5/venv/bin/python3",
 }

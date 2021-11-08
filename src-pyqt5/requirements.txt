@@ -1,0 +1,8 @@
+forex-python==1.6
+numpy==1.21.0
+openpyxl==3.0.7
+pandas==1.3.0
+XlsxWriter==1.4.4
+ipython
+PyQt5==5.14.2
+pyinstaller
